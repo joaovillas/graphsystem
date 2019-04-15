@@ -1,5 +1,5 @@
 export default interface NodeInterface {
-  indentifier: number;
-  value: any;
+  identifier: number;
+  value: string;
   connections: number[];
 }
