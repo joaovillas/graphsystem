@@ -12,15 +12,65 @@ class Grafo {
         return this.nodes;
     }
     appendToGrafo(node) {
-        this.nodes.push(node);
-        return "appended with success";
+        const nodeFounded = this.nodes.filter((nodeExistent) => {
+            if (nodeExistent.identifier === node.identifier) {
+                return nodeExistent;
+            }
+        });
+        if (nodeFounded.length < 1) {
+            this.nodes.push(node);
+            this.updateConnections();
+            return "appended with success";
+        }
+        else {
+            return "This node already exist!";
+        }
+    }
+    updateConnections() {
+        this.nodes.forEach(externalNode => {
+            const connections = [];
+            this.nodes.forEach(internalNode => {
+                if (internalNode.connections.includes(externalNode.identifier)) {
+                    connections.push(internalNode.identifier);
+                }
+            });
+            connections.concat(externalNode.connections);
+            const connectionsAux = [...new Set(connections)];
+            externalNode.connections = connectionsAux;
+        });
+    }
+    updateDeletedConnections(identifier) {
+        const newGrafo = this.nodes.filter(node => {
+            if (node.identifier !== identifier) {
+                node.connections = node.connections.filter(conn => {
+                    if (conn !== identifier) {
+                        return conn;
+                    }
+                });
+                return node;
+            }
+        });
+        return newGrafo;
     }
     findInGrafo(identifier) {
-        for (let i in this.nodes) {
-            if (this.nodes[i].identifier === identifier) {
-                return this.nodes[i];
+        const filteredNode = this.nodes.filter((node) => {
+            if (node.identifier === identifier) {
+                return node;
             }
-        }
+        });
+        return filteredNode[0] ? filteredNode[0] : null;
+    }
+    getDegreeFromNode(identifier) {
+        const foundedNode = this.findInGrafo(identifier);
+        return foundedNode.connections.length;
+    }
+    removeFromGrafo(identifier) {
+        const newGrafo = this.nodes.filter((node) => {
+            if (identifier !== node.identifier) {
+                return node;
+            }
+        });
+        return newGrafo;
     }
     setTemplateTest() {
         const nodess = [

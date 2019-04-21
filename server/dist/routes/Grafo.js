@@ -20,7 +20,23 @@ router.post("/node", (req, res) => {
     res.send(ResponseHelper_1.default(grafo.appendToGrafo(node), 200));
 });
 router.get("/node/:identifier", (req, res) => {
-    const identifier = req.params.identifier;
-    res.send(grafo.findInGrafo(identifier));
+    const identifier = Number(req.params.identifier);
+    res.send(grafo.findInGrafo(identifier)
+        ? grafo.findInGrafo(identifier)
+        : ResponseHelper_1.default("Identifier doesn`t exist", 400));
 });
+router.get("/node/remove/:identifier", (req, res) => {
+    const identifier = Number(req.params.identifier);
+    grafo.findInGrafo(identifier);
+    res.send(grafo.findInGrafo(identifier)
+        ? (grafo.nodes = grafo.updateDeletedConnections(identifier))
+        : ResponseHelper_1.default("Identifier doesn`t exist", 400));
+});
+router.get("/node/degree/:identifier", (req, res) => {
+    const identifier = Number(req.params.identifier);
+    res.send(grafo.findInGrafo(identifier)
+        ? grafo.getDegreeFromNode(identifier).toString()
+        : ResponseHelper_1.default("Identifier doesn`t exist", 400));
+});
+router.get("/node/connection/");
 exports.default = router;
