@@ -1,6 +1,8 @@
 import GrafoInterface from "./interfaces/GrafoInterface";
 import Node from "./Node";
-import ResponseHelper from "../helpers/ResponseHelper";
+import exampleJson from '../input/example';
+
+
 
 export default class Grafo implements GrafoInterface {
   nodes: Node[];
@@ -90,29 +92,8 @@ export default class Grafo implements GrafoInterface {
     return grafo.connections;
   }
 
-  setTemplateTest() {
-    const nodess = [
-      {
-        identifier: 1,
-        value: "asdasdshadsaj",
-        connections: []
-      },
-      {
-        identifier: 2,
-        value: "asdasdshadsaj",
-        connections: [1]
-      },
-      {
-        identifier: 3,
-        value: "asdasdshadsaj",
-        connections: [2]
-      },
-      {
-        identifier: 4,
-        value: "asdasdshadsaj",
-        connections: [2, 3]
-      }
-    ];
+  loadFromFile() {
+    const nodess = exampleJson;
 
     nodess.forEach(node => {
       this.appendToGrafo(

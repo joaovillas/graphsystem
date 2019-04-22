@@ -9,7 +9,7 @@ const router = express.Router();
 
 let node: Node;
 const grafo = new Grafo();
-grafo.setTemplateTest();
+
 
 router.get("/", (req: Request, res: Response) => {
   res.send(grafo);
@@ -70,6 +70,10 @@ router.get("/node/adjacent/:identifier", (req: Request, res: Response) => {
       ? grafo.getAdjacentes(identifier)
       : ResponseHelper("Identifier doesn`t exist", 400)
   );
+});
+
+router.get("/loadFromFile",(req: Request, res: Response) => { 
+  grafo.loadFromFile();
 });
 
 export default router;
