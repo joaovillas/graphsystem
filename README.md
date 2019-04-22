@@ -21,7 +21,7 @@ Group:
 
 0 - How to load from the file?
  * 1 - The file is in `/src/input/example.ts`.
- * 2 - Change what you want! but follows the structure object.
+ * 2 - Change what you want! but follows the object structure.
  * 3 - Do a GET request to `/api/v1/grafo/loadFromFile`
  - - - - 
 1 - How to see the Graph?  
