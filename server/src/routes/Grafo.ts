@@ -10,7 +10,6 @@ const router = express.Router();
 let node: Node;
 const grafo = new Grafo();
 
-
 router.get("/", (req: Request, res: Response) => {
   res.send(grafo);
 });
@@ -72,8 +71,19 @@ router.get("/node/adjacent/:identifier", (req: Request, res: Response) => {
   );
 });
 
-router.get("/loadFromFile",(req: Request, res: Response) => { 
+router.get(
+  "/node/connection/insert/:identifier&:connection",
+  (req: Request, res: Response) => {
+    const identifier: number = Number(req.params.identifier);
+    const connection: number = Number(req.params.connection);
+
+    res.send(grafo.appendConnectionToNode(identifier, connection));
+  }
+);
+
+router.get("/loadFromFile", (req: Request, res: Response) => {
   grafo.loadFromFile();
+  res.send(grafo.getGrafo());
 });
 
 export default router;

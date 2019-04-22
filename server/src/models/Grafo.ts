@@ -1,8 +1,6 @@
 import GrafoInterface from "./interfaces/GrafoInterface";
 import Node from "./Node";
-import exampleJson from '../input/example';
-
-
+import exampleJson from "../input/example";
 
 export default class Grafo implements GrafoInterface {
   nodes: Node[];
@@ -87,9 +85,26 @@ export default class Grafo implements GrafoInterface {
     return false;
   }
 
-  getAdjacentes(identifier:number):number[]{
-    const grafo:Node = this.findInGrafo(identifier);
+  getAdjacentes(identifier: number): number[] {
+    const grafo: Node = this.findInGrafo(identifier);
     return grafo.connections;
+  }
+
+  appendConnectionToNode(identifier: number, connection: number):Node[] {
+    const grafo: Node = this.findInGrafo(identifier);
+    const grafoConection: Node = this.findInGrafo(connection);
+
+    if (grafoConection !== null && grafo !== null) {
+      if (
+        !grafo.connections.includes(grafoConection.identifier) &&
+        !grafoConection.connections.includes(grafo.identifier)
+      ) {
+        grafo.connections.push(grafoConection.identifier);
+        grafoConection.connections.push(grafo.identifier);
+      }
+    }
+
+    return this.getGrafo();
   }
 
   loadFromFile() {
