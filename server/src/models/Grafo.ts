@@ -85,6 +85,11 @@ export default class Grafo implements GrafoInterface {
     return false;
   }
 
+  getAdjacentes(identifier:number):number[]{
+    const grafo:Node = this.findInGrafo(identifier);
+    return grafo.connections;
+  }
+
   setTemplateTest() {
     const nodess = [
       {

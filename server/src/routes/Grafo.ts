@@ -63,4 +63,13 @@ router.get(
   }
 );
 
+router.get("/node/adjacent/:identifier", (req: Request, res: Response) => {
+  const identifier: number = Number(req.params.identifier);
+  res.send(
+    grafo.findInGrafo(identifier)
+      ? grafo.getAdjacentes(identifier)
+      : ResponseHelper("Identifier doesn`t exist", 400)
+  );
+});
+
 export default router;
