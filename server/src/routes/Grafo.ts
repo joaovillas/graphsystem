@@ -53,6 +53,14 @@ router.get("/node/degree/:identifier", (req: Request, res: Response) => {
   );
 });
 
-router.get("/node/connection/");
+router.get(
+  "/node/connection/:identifier1&:identifier2",
+  (req: Request, res: Response) => {
+    const identifier1: number = Number(req.params.identifier1);
+    const identifier2: number = Number(req.params.identifier2);
+
+    res.send(grafo.testConnections(identifier1, identifier2));
+  }
+);
 
 export default router;

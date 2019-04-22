@@ -1,5 +1,7 @@
 import GrafoInterface from "./interfaces/GrafoInterface";
 import Node from "./Node";
+import ResponseHelper from "../helpers/ResponseHelper";
+
 export default class Grafo implements GrafoInterface {
   nodes: Node[];
 
@@ -42,7 +44,7 @@ export default class Grafo implements GrafoInterface {
   }
 
   removeFromGrafo(identifier: number): Node[] {
-    const newGrafo:Node[] = this.nodes.filter(node => {
+    const newGrafo: Node[] = this.nodes.filter(node => {
       if (node.identifier !== identifier) {
         node.connections = node.connections.filter(conn => {
           if (conn !== identifier) {
@@ -67,6 +69,20 @@ export default class Grafo implements GrafoInterface {
   getDegreeFromNode(identifier: number): number {
     const foundedNode: Node = this.findInGrafo(identifier);
     return foundedNode.connections.length;
+  }
+
+  testConnections(identifier1: number, identifier2: number): boolean {
+    const grafo1: Node = this.findInGrafo(identifier1);
+    const grafo2: Node = this.findInGrafo(identifier2);
+
+    if (
+      grafo1.connections.includes(grafo2.identifier) &&
+      grafo2.connections.includes(grafo1.identifier)
+    ) {
+      return true;
+    }
+
+    return false;
   }
 
   setTemplateTest() {
