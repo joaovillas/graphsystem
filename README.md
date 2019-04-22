@@ -50,12 +50,12 @@ GET: `/api/v1/grafo/node/remove/{identifier}`
 5 - How to see the degree of a node?   
 GET: `/api/v1/grafo/node/degree/{identifier}`
  - - - - 
-6 - How to test connections between two nodes? 
+6 - How to test connections between two nodes?   
 GET: `/api/v1/grafo/node/connection/{identifier1}&{identifier2}`
  - - - - 
-7 - How to see the adjacent graphs? 
+7 - How to see the adjacent graphs?   
 GET: `/api/v1/grafo/node/adjacent/{identifier1}` 
  - - - - 
-8 - How to INSERT a connection between two nodes? 
+8 - How to INSERT a connection between two nodes?   
 GET: `/api/v1/grafo/node/connection/insert/{identifier}&{connection}`
  - - - -
