@@ -8,7 +8,14 @@ import ResponseHelper from "../helpers/ResponseHelper";
 const router = express.Router();
 
 let node: Node;
+
+
+
 const grafo = new Grafo();
+
+
+
+
 
 router.get("/", (req: Request, res: Response) => {
   res.send(grafo);
@@ -81,9 +88,32 @@ router.get(
   }
 );
 
+router.get("/isConnected/:identifier", (req: Request, res: Response) => {
+  const identifier: number = Number(req.params.identifier);
+  res.send(
+    grafo.findInGrafo(identifier)
+      ? grafo.isConnected(identifier)
+      : ResponseHelper("Identifier doesn`t exist", 400)
+  );
+});
+
+router.get("/isEulerPath/", (req: Request, res: Response) => {
+  res.send(grafo.isEulerPathPossible());
+});
+
+router.get("/avarage", (req: Request, res: Response) => {
+  res.send(ResponseHelper(grafo.getMinMaxAvgDegree(), 200));
+});
+
+router.get("/adjacentMatrix", (req: Request, res: Response) => {
+  console.table(grafo.getMatrizAdj());
+  res.send(grafo.getMatrizAdj());
+});
+
 router.get("/loadFromFile", (req: Request, res: Response) => {
   grafo.loadFromFile();
   res.send(grafo.getGrafo());
 });
+
 
 export default router;
