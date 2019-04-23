@@ -71,6 +71,22 @@ export default class Grafo implements GrafoInterface {
     return foundedNode.connections.length;
   }
 
+  getMinMaxAvgDegree(): string{
+    if(this.nodes.length === 0 ){
+      return "Não há nós criados"
+    }
+    const degree:number[] = []
+    this.nodes.forEach((node:Node) => {
+      degree.push(this.getDegreeFromNode(node.identifier))
+    })
+
+    const max = Math.max(...degree)
+    const min = Math.min(...degree)
+    let avg = (degree.reduce((total: number, num:number) => total + num))/degree.length
+
+    return "O grau max é "+max+" o grau medio é "+avg+" o min é "+min
+  }
+
   testConnections(identifier1: number, identifier2: number): boolean {
     const grafo1: Node = this.findInGrafo(identifier1);
     const grafo2: Node = this.findInGrafo(identifier2);
@@ -106,11 +122,43 @@ export default class Grafo implements GrafoInterface {
 
     return this.getGrafo();
   }
+  
+  depth_first_search_recursive(identifier:number, visited: number[]=[]): number[]{
+    if(visited.includes(identifier)){
+      return visited
+    }
+
+    visited.push(identifier)
+    const node = this.findInGrafo(identifier)
+    node.connections.forEach(element => {
+      visited = this.depth_first_search_recursive(element, visited)
+    });
+    return visited
+  }
+  isGrafoConexo(identifier:number): string{
+    const nodeViseted = this.depth_first_search_recursive(identifier)
+    if(nodeViseted.length === this.nodes.length){
+      return "este grafo é conexo"
+    }
+    return "este grago não é conexo"      
+  }
+
+  isEulerPathPossible(identifier: number): boolean{
+    const nodeViseted = this.depth_first_search_recursive(identifier)
+    const isAllNodeEven:boolean[] = this.nodes.map((element) => {
+        return element.connections.length%2 === 0
+    })
+    if(nodeViseted.length === this.nodes.length && !isAllNodeEven.includes(false)){
+      return true
+    }
+    return false
+  }
+
 
   loadFromFile() {
     const nodess = exampleJson;
 
-    nodess.forEach(node => {
+    nodess.forEach((node:any) => {
       this.appendToGrafo(
         new Node(node.identifier, node.value, node.connections)
       );
