@@ -154,6 +154,24 @@ export default class Grafo implements GrafoInterface {
     return false
   }
 
+  getMatrizAdj(): Array<Array<number>>{
+    let matriz = new Array<Array<number>>()
+    const nodes:Node[] = this.nodes
+    
+    for(let i = 0 ; i < nodes.length; i++){
+      let row: number[] = new Array<number>()
+      for (let j = 0; j < nodes.length; j++){
+        if(nodes[i].connections.includes(nodes[j].identifier)){
+          row.push(1)
+        } else {
+          row.push(0)
+        }
+      }
+      matriz.push(row)
+    }
+    return matriz
+  }
+
 
   loadFromFile() {
     const nodess = exampleJson;
