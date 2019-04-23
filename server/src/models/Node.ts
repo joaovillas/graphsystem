@@ -11,7 +11,4 @@ export default class Node implements NodeInterface {
     this.connections = connections;
   }
 
-  getConnections(): number[] {
-    return;
-  }
 }
