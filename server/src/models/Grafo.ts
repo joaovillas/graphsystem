@@ -148,7 +148,7 @@ export default class Grafo implements GrafoInterface {
   }
 
   isEulerPathPossible(): boolean {
-    const count = this.nodes.filter(n => this.getDegreeFromNode(n.identifier)%2).length
+    const count = this.nodes.filter(n => this.getDegreeFromNode(n.identifier) % 2).length
     return !(count === 1 || count > 2);
   }
 
