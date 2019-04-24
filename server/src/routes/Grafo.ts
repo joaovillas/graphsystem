@@ -88,13 +88,8 @@ router.get(
   }
 );
 
-router.get("/isConnected/:identifier", (req: Request, res: Response) => {
-  const identifier: number = Number(req.params.identifier);
-  res.send(
-    grafo.findInGrafo(identifier)
-      ? grafo.isConnected(identifier)
-      : ResponseHelper("Identifier doesn`t exist", 400)
-  );
+router.get("/isConnected/", (req: Request, res: Response) => {
+  res.send(grafo.isConnected());
 });
 
 router.get("/isEulerPath/", (req: Request, res: Response) => {

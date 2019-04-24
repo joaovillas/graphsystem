@@ -139,8 +139,12 @@ export default class Grafo implements GrafoInterface {
     return visited
   }
 
-  isConnected(identifier: number): boolean {
-    const nodeViseted = this.depthFirstSearchRecursive(identifier)
+  isConnected(): boolean {
+    if(!this.nodes.length){
+      return  false;
+    }
+
+    const nodeViseted = this.depthFirstSearchRecursive(this.nodes[0].identifier);
     if (nodeViseted.length === this.nodes.length) {
       return true;
     }
@@ -149,7 +153,7 @@ export default class Grafo implements GrafoInterface {
 
   isEulerPathPossible(): boolean {
     const count = this.nodes.filter(n => this.getDegreeFromNode(n.identifier) % 2).length
-    return !(count === 1 || count > 2);
+    return count !== 2;
   }
 
   getMatrizAdj(): number[][] {
@@ -182,4 +186,5 @@ export default class Grafo implements GrafoInterface {
       );
     });
   }
+
 }
