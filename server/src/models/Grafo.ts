@@ -1,13 +1,13 @@
-import GrafoInterface from "./interfaces/GrafoInterface";
+import {GraphType, GrafoInterface} from "./interfaces/GrafoInterface";
 import Node from "./Node";
 import * as fs from 'fs';
 
-const file = fs.readFileSync('input/graph.json', 'utf-8');
-
 export default class Grafo implements GrafoInterface {
+  type: GraphType;
   nodes: Node[];
 
-  constructor(nodes: Node[] = []) {
+  constructor(type: GraphType = "undirected", nodes: Node[] = []) {
+    this.type = type;
     this.nodes = nodes;
   }
 
@@ -104,7 +104,7 @@ export default class Grafo implements GrafoInterface {
     return false;
   }
 
-  getAdjacentes(identifier: number): number[] {
+  getAdjacents(identifier: number): number[] {
     const grafo: Node = this.findInGrafo(identifier);
     return grafo.connections;
   }
@@ -163,7 +163,7 @@ export default class Grafo implements GrafoInterface {
     this.nodes.forEach((_, i) => {
       const row: number[] = new Array<number>()
       this.nodes.forEach(
-        (n, j) => {
+        (__, j) => {
           if (nodes[i].connections.includes(nodes[j].identifier)) {
             row.push(1)
           } else {
@@ -178,13 +178,22 @@ export default class Grafo implements GrafoInterface {
 
 
   loadFromFile() {
-    const nodess = JSON.parse(file);
-    // console.log(nodess)
-    nodess.nodes.forEach((node: any) => {
-      this.appendToGrafo(
-        new Node(node.identifier, node.value, node.connections)
-      );
-    });
+    const graph = JSON.parse(fs.readFileSync('input/graph.json', 'utf-8'));
+    this.type = graph.type;
+    this.nodes = graph.nodes;
   }
 
+  saveOnFile() {
+    try{
+      fs.writeFileSync(
+        'input/graph.json',
+        JSON.stringify(this, null, 2),
+        'utf-8'
+      );
+
+      return "Salvo com sucesso!"
+    } catch {
+      return "Erro ao salvar"
+    }
+  }
 }

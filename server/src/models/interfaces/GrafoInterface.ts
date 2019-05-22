@@ -1,5 +1,8 @@
-import Node from '../Node';
+import Node from "../Node";
 
-export default interface GrafoInterface {
+export type GraphType = "undirected" | "directed" | "weighted";
+
+export interface GrafoInterface {
+  type: GraphType;
   nodes: Node[];
 }
