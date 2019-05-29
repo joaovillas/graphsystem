@@ -5,7 +5,6 @@ import * as bodyParser from "body-parser";
 import routes from "./routes";
 
 import cors from "cors";
-import Grafo from "./models/Grafo";
 
 class App {
   public app: express.Application;
@@ -16,11 +15,11 @@ class App {
   }
   private config(): void {
 
-    
+
     this.app.use(cors());
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: false }));
-    
+
     // add routes
     this.app.use("/api/v1", routes);
 

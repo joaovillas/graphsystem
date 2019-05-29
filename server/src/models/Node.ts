@@ -1,12 +1,14 @@
-import NodeInterface from "./interfaces/NodeInterface";
+export interface Connection {
+  weight: number;
+  neighbor: Node;
+}
 
-export default class Node implements NodeInterface {
-  identifier: number;
-  connections: number[];
+export class Node {
+  id: number;
+  connections: Connection[] = [];
+  deleted: boolean = false;
 
-  constructor(identifier: number, connections: number[]) {
-    this.identifier = identifier;
-    this.connections = connections;
+  constructor(id: number) {
+    this.id = id;
   }
-
 }

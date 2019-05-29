@@ -1,4 +1,4 @@
-export default interface NodeInterface {
+export interface NodeInterface {
   identifier: number;
   connections: number[];
 }
