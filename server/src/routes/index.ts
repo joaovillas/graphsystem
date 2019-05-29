@@ -1,7 +1,7 @@
 import { Router } from "express";
-import Grafo from './Grafo';
+import { graphRouter } from "./GraphRouter";
 
 const router = Router();
-router.use('/grafo',Grafo);
+router.use("/grafo", graphRouter);
 // we will add routes to this default router in future
 export default router;

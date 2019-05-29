@@ -1,185 +1,223 @@
-import * as fs from 'fs';
-import { GraphType, GraphInterface, NodeInfo, ConnectionInfo } from "../interfaces/GrafoInterface";
+import * as fs from "fs";
+import {
+  GraphType,
+  GraphInterface,
+  NodeInfo,
+  ConnectionInfo
+} from "../interfaces/GraphInterface";
 import { Node } from "./Node";
 import { NodeScheme } from "./NodeScheme";
 
+interface GraphFile {
+  type: GraphType;
+  nodes: NodeScheme[];
+}
+
+type MatrizElement = number | string;
+
 export class Graph implements GraphInterface {
   type: GraphType;
-  nodes: Node[];
+  private rawNodes: Node[];
 
   constructor(type = GraphType.undirected, nodes: Node[] = []) {
     this.type = type;
-    this.nodes = nodes;
+    this.rawNodes = nodes;
+  }
+
+  private get nodes(): Node[] {
+    return this.rawNodes.filter(n => !n.deleted);
   }
 
   getNodes(): NodeInfo[] {
-    return this.nodes
-      .filter(n => !n.deleted)
-      .map(n => this.cleanNode(n));
+    return this.nodes.map(n => this.getNodeInfo(n));
   }
 
-  cleanNode({ id, connections }: Node): NodeInfo {
-    return ({
-      id,
-      connections: connections.map(n => {
-        return this.type !== GraphType.weighted ?
-          n.neighbor.id : {
-            node: n.neighbor,
-            weight: n.weight,
-          };
-      })
-    });
+  getNodeInfo(node: Node): NodeInfo {
+    return (
+      node && {
+        id: node.id,
+        connections: node.connections.map(n => {
+          return this.type !== GraphType.weighted
+            ? n.neighbor.id
+            : {
+                node: n.neighbor,
+                weight: n.weight
+              };
+        })
+      }
+    );
+  }
+
+  findNode(id: number): Node | undefined {
+    return this.nodes.find(n => n.id === id);
   }
 
   addNode(nodeScheme: NodeScheme): string {
-    const nodeFounded = this.nodes.some((n) => n.id === nodeScheme.id);
-
-    if (nodeFounded) return "Erro: Já existe um nó com esse identificador";
+    const nodeFounded = this.findNode(nodeScheme.id);
+    if (nodeFounded) return "Erro: Nó já existente";
 
     const node = new Node(nodeScheme.id);
+    this.rawNodes.push(node);
 
-    this.nodes.push(node);
-    nodeScheme.connections.forEach(
-      (toConnect, i) => this.connectNodes(node.id, toConnect, nodeScheme.weights[i])
+    nodeScheme.connections.forEach((toConnect, i) =>
+      this.connectNodes(
+        node.id,
+        toConnect,
+        this.type === GraphType.weighted ? nodeScheme.weights[i] : 1
+      )
     );
-
 
     return "Nó adicionado com sucesso";
   }
 
-  connectNodes(nodeId: number, toConnectId: number, weight: number = 1): NodeInfo[] | string {
-    const node = this.nodes.find(n => n.id === nodeId);
-    const newNeighbor = this.nodes.find(n => n.id === toConnectId);
+  connectNodes(
+    nodeId: number,
+    toConnectId: number,
+    weight: number = 1
+  ): NodeInfo[] | string {
+    const node = this.findNode(nodeId);
+    if (!node) return "Erro: Nó inicial não encontrado";
 
-    if (!node) return "Erro: Nó inicial não encontrado"
-    if (!newNeighbor) return "Erro: Nó alvo não encontrado"
+    if (!node.connections.some(n => n.neighbor.id === toConnectId)) {
+      const newNeighbor = this.findNode(toConnectId);
+      if (!newNeighbor) return "Erro: Nó alvo não encontrado";
 
-    node.connections.push({ weight, neighbor: newNeighbor });
-    if (this.type !== GraphType.directed) newNeighbor.connections.push({ weight, neighbor: node });
+      node.addConnection({ weight, neighbor: newNeighbor });
+      if (this.type !== GraphType.directed) {
+        newNeighbor.addConnection({ weight, neighbor: node });
+      }
+    }
 
     return this.getNodes();
   }
 
   removeNode(id: number): NodeInfo[] | string {
-    const toDelete = this.nodes.find(n => n.id === id);
+    const toDelete = this.findNode(id);
     if (!toDelete) return "Erro: Nó não encontrado";
 
-    toDelete.deleted = true;
+    toDelete.delete();
 
     return this.getNodes();
   }
 
-  findNode(id: number): NodeInfo | undefined {
-    const node = this.nodes.find(n => n.id === id);
-    return node ? this.cleanNode(node) : undefined;
+  nodeDegree(node: Node) {
+    return node.connections.length;
   }
 
-  getDegreeFromNode(id: number): number | undefined {
-    const node = this.nodes.find(n => n.id === id);
-    return node ? node.connections.length : undefined;
+  getNodeDegree(id: number): number | undefined {
+    const node = this.findNode(id);
+    return node && this.nodeDegree(node);
   }
 
   getMinMaxAvgDegree(): string {
     if (this.nodes.length === 0) {
-      return "Não há nós criados"
+      return "Não há nós criados";
     }
 
-    const degrees: number[] = this.nodes.map(n => n.connections.length);
+    const degrees: number[] = this.nodes.map(this.nodeDegree);
 
-    const max = Math.max(...degrees)
-    const min = Math.min(...degrees)
-    const avg = (degrees.reduce((total: number, num: number) => total + num)) / degrees.length
+    const max = Math.max(...degrees);
+    const min = Math.min(...degrees);
+    const avg =
+      degrees.reduce((total: number, num: number) => total + num) /
+      degrees.length;
 
-    return "O grau max é " + max + " o grau medio é " + avg + " o min é " + min
+    return "O grau max é " + max + " o grau medio é " + avg + " o min é " + min;
   }
 
-  testConnections(id1: number, id2: number): boolean {
-    const grafo1 = this.findNode(id1);
-    const grafo2 = this.findNode(id2);
+  testConnections(nodeId: number, targetId: number): boolean | string {
+    const node = this.findNode(nodeId);
+    if (!node) return "Erro: Nó inicial não encontrado";
+    const target = this.findNode(targetId);
+    if (!target) return "Erro: Nó alvo não encontrado";
 
-    if (
-      grafo1.connections.includes(grafo2.id) &&
-      grafo2.connections.includes(grafo1.id)
-    ) {
-      return true;
-    }
-
-    return false;
+    return (
+      node.connections.some(n => n.neighbor === target) &&
+      target.connections.some(t => t.neighbor === node)
+    );
   }
 
   getAdjacents(id: number): ConnectionInfo[] | string {
-    const result: NodeInfo = this.findNode(id);
+    const result = this.getNodeInfo(this.findNode(id));
     return typeof result === "string" ? result : result.connections;
   }
 
-  depthFirstSearchRecursive(id: number, visited: number[] = []): number[] {
-    if (visited.includes(id)) {
-      return visited
-    }
+  depthFirstSearchRecursive(node: Node, visited: number[] = []): number[] {
+    if (visited.includes(node.id)) return visited;
+    visited.push(node.id);
 
-    visited.push(id)
-    const node = this.nodes.find(n => n.id === id);
-    node.connections.forEach(element => {
-      visited = this.depthFirstSearchRecursive(element.neighbor.id, visited)
+    node.connections.forEach(n => {
+      visited = this.depthFirstSearchRecursive(n.neighbor, visited);
     });
-    return visited
+
+    return visited;
   }
 
   isConnected(): boolean {
-    if (!this.nodes.length) {
-      return false;
-    }
+    if (!this.nodes.length) return false;
 
-    const nodeViseted = this.depthFirstSearchRecursive(this.nodes[0].id);
-    if (nodeViseted.length === this.nodes.length) {
-      return true;
-    }
-    return false;
+    const visitedNodes = this.depthFirstSearchRecursive(this.nodes[0]);
+    return visitedNodes.length === this.nodes.length;
   }
 
   isEulerPathPossible(): boolean {
-    const count = this.nodes.filter(n => this.getDegreeFromNode(n.id) % 2).length
+    const count = this.nodes.filter(n => this.getNodeDegree(n.id) % 2).length;
     return count !== 2;
   }
 
-  getMatrizAdj(): number[][] {
-    const matriz: number[][] = [];
-    const nodes: Node[] = this.nodes
+  getAdjMatriz(): MatrizElement[][] {
+    const matriz: MatrizElement[][] = [];
+    // const matriz: MatrizElement[][] = [
+    //   [undefined, ...this.nodes.map(n => n.id.toString())]
+    // ];
 
-    this.nodes.forEach((_, i) => {
-      const row: number[] = new Array<number>()
-      this.nodes.forEach(
-        (__, j) => {
-          if (nodes[i].connections.map(c => c).includes(nodes[j].id)) {
-            row.push(1)
-          } else {
-            row.push(0)
-          }
-        }
-      );
-      matriz.push(row)
-    })
-    return matriz
+    this.nodes.forEach(nodeX => {
+      const row: MatrizElement[] = [];
+      // const row: MatrizElement[] = [nodeX.id.toString()];
+
+      this.nodes.forEach(nodeY => {
+        const connection = nodeX.connections.find(
+          n => n.neighbor.id === nodeY.id
+        );
+        row.push(connection ? connection.weight : 0);
+      });
+
+      matriz.push(row);
+    });
+
+    return matriz;
   }
 
-
   loadFromFile() {
-    const graph = JSON.parse(fs.readFileSync('input/graph.json', 'utf-8'));
+    const graph: GraphFile = JSON.parse(
+      fs.readFileSync("input/graph.json", "utf-8")
+    );
+
+    this.rawNodes = [];
     this.type = graph.type;
-    this.nodes = graph.nodes;
+    graph.nodes.forEach(({ id }) => this.addNode(new NodeScheme(id)));
+    graph.nodes.forEach(n => {
+      n.connections.forEach((c, i) => this.connectNodes(n.id, c, n.weights[i]));
+    });
+    return this.getNodes();
   }
 
   saveOnFile() {
+    const file: GraphFile = {
+      type: this.type,
+      nodes: NodeScheme.parseNodeScheme(this.nodes)
+    };
+
     try {
       fs.writeFileSync(
-        'input/graph.json',
-        JSON.stringify(this, null, 2),
-        'utf-8'
+        "input/graph.json",
+        JSON.stringify(file, null, 2),
+        "utf-8"
       );
 
-      return "Salvo com sucesso!"
+      return "Salvo com sucesso!";
     } catch {
-      return "Erro ao salvar"
+      return "Erro ao salvar";
     }
   }
 }

@@ -4,20 +4,21 @@ export enum GraphType {
   undirected = "undirected",
   directed = "directed",
   weighted = "weighted"
-};
+}
 
-export type ConnectionInfo = ({
-  node: Node,
-  weight: number,
-} | number);
+export type ConnectionInfo =
+  | {
+      node: Node;
+      weight: number;
+    }
+  | number;
 
-export type NodeInfo = {
+export interface NodeInfo {
   id: number;
   connections: ConnectionInfo[];
 }
 
 export interface GraphInterface {
   type: GraphType;
-  nodes: Node[];
   getNodes: () => NodeInfo[];
 }

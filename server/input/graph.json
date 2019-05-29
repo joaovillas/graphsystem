@@ -1,1 +1,43 @@
-{}
+{
+  "type": "undirected",
+  "nodes": [
+    {
+      "id": 0,
+      "connections": [
+        2,
+        1
+      ],
+      "weights": [
+        1,
+        1
+      ]
+    },
+    {
+      "id": 1,
+      "connections": [
+        2,
+        0
+      ],
+      "weights": [
+        1,
+        1
+      ]
+    },
+    {
+      "id": 3,
+      "connections": [],
+      "weights": []
+    },
+    {
+      "id": 2,
+      "connections": [
+        0,
+        1
+      ],
+      "weights": [
+        1,
+        1
+      ]
+    }
+  ]
+}
