@@ -79,11 +79,11 @@ graphRouter.get(
   }
 );
 
-graphRouter.get("/isConnected/", (_, res: Response) => {
+graphRouter.get("/isConnected", (_, res: Response) => {
   res.send(graph.isConnected());
 });
 
-graphRouter.get("/isEulerPath/", (_, res: Response) => {
+graphRouter.get("/isEulerPath", (_, res: Response) => {
   res.send(graph.isEulerPathPossible());
 });
 
