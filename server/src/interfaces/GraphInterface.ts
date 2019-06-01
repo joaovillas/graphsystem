@@ -8,7 +8,7 @@ export enum GraphType {
 
 export type ConnectionInfo =
   | {
-      node: Node;
+      node: number;
       weight: number;
     }
   | number;

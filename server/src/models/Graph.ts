@@ -13,8 +13,6 @@ interface GraphFile {
   nodes: NodeScheme[];
 }
 
-type MatrizElement = number | string;
-
 export class Graph implements GraphInterface {
   type: GraphType;
   private rawNodes: Node[];
@@ -22,6 +20,7 @@ export class Graph implements GraphInterface {
   constructor(type = GraphType.undirected, nodes: Node[] = []) {
     this.type = type;
     this.rawNodes = nodes;
+    console.log(`new ${this.type} graph initialized`);
   }
 
   private get nodes(): Node[] {
@@ -40,7 +39,7 @@ export class Graph implements GraphInterface {
           return this.type !== GraphType.weighted
             ? n.neighbor.id
             : {
-                node: n.neighbor,
+                node: n.neighbor.id,
                 weight: n.weight
               };
         })
@@ -53,6 +52,10 @@ export class Graph implements GraphInterface {
   }
 
   addNode(nodeScheme: NodeScheme): string {
+    if (nodeScheme.weights && this.type !== GraphType.weighted) {
+      return "Erro: Grafo não suporta peso";
+    }
+
     const nodeFounded = this.findNode(nodeScheme.id);
     if (nodeFounded) return "Erro: Nó já existente";
 
@@ -75,6 +78,10 @@ export class Graph implements GraphInterface {
     toConnectId: number,
     weight: number = 1
   ): NodeInfo[] | string {
+    if (this.type !== GraphType.weighted && weight !== 1) {
+      return "Erro: Grafo não suporta peso";
+    }
+
     const node = this.findNode(nodeId);
     if (!node) return "Erro: Nó inicial não encontrado";
 
@@ -165,15 +172,11 @@ export class Graph implements GraphInterface {
     return count !== 2;
   }
 
-  getAdjMatriz(): MatrizElement[][] {
-    const matriz: MatrizElement[][] = [];
-    // const matriz: MatrizElement[][] = [
-    //   [undefined, ...this.nodes.map(n => n.id.toString())]
-    // ];
+  adjacentMatrix(): number[][] {
+    const matriz: number[][] = [];
 
     this.nodes.forEach(nodeX => {
-      const row: MatrizElement[] = [];
-      // const row: MatrizElement[] = [nodeX.id.toString()];
+      const row: number[] = [];
 
       this.nodes.forEach(nodeY => {
         const connection = nodeX.connections.find(
