@@ -2,7 +2,7 @@ import express = require("express");
 import { Request, Response } from "express";
 import { Graph } from "../models/Graph";
 import { NodeScheme } from "../models/NodeScheme";
-import { responseHelper } from "../helpers";
+import { responseHelper, formatMatrix } from "../helpers";
 import { GraphType } from "../interfaces/GraphInterface";
 
 export const graphRouter = express.Router();
@@ -93,8 +93,9 @@ graphRouter.get("/avarage", (_, res: Response) => {
 });
 
 graphRouter.get("/adjacentMatrix", (_, res: Response) => {
-  console.table(graph.adjacentMatrix());
-  res.send(graph.adjacentMatrix());
+  const matrix = graph.adjacentMatrix();
+  console.table(formatMatrix(graph, matrix));
+  res.send(matrix);
 });
 
 graphRouter.get("/loadFromFile", (_, res: Response) => {
@@ -124,5 +125,13 @@ graphRouter.get("/type", (_, res) => {
 });
 
 graphRouter.get("/warshallMatrix", (_, res) => {
-  res.send(graph.warshallMatrix());
+  const matrix = graph.warshallMatrix();
+  console.table(formatMatrix(graph, matrix));
+  res.send(matrix);
+});
+
+graphRouter.get("/floydMatrix", (_, res) => {
+  const matrix = graph.floydMatrix();
+  console.table(formatMatrix(graph, matrix));
+  res.send(matrix);
 });

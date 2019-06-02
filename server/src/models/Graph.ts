@@ -173,7 +173,7 @@ export class Graph implements GraphInterface {
   }
 
   adjacentMatrix(): number[][] {
-    const matriz: number[][] = [];
+    const matrix: number[][] = [];
 
     this.nodes.forEach(nodeX => {
       const row: number[] = [];
@@ -185,10 +185,10 @@ export class Graph implements GraphInterface {
         row.push(connection ? connection.weight : 0);
       });
 
-      matriz.push(row);
+      matrix.push(row);
     });
 
-    return matriz;
+    return matrix;
   }
 
   loadFromFile(): NodeInfo[] {
@@ -230,12 +230,28 @@ export class Graph implements GraphInterface {
     matrix.forEach((_, k) => {
       matrix.forEach((row, i) => {
         if (row[k]) {
-          matrix[i] = row.map((cell, j) => cell || matrix[k][j]);
+          matrix[i] = row.map((cell, j) => (cell || matrix[k][j] ? 1 : 0));
         }
       });
     });
 
-    console.table(matrix);
+    return matrix;
+  }
+
+  floydMatrix(): number[][] {
+    const matrix = this.adjacentMatrix();
+
+    matrix.forEach((row, i) => {
+      matrix[i] = row.map((cell, j) => (i === j ? 0 : cell || Infinity));
+    });
+
+    matrix.forEach((_, k) => {
+      matrix.forEach((row, i) => {
+        matrix[i] = row.map((cell, j) =>
+          cell > row[k] + matrix[k][j] ? row[k] + matrix[k][j] : cell
+        );
+      });
+    });
 
     return matrix;
   }
