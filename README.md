@@ -115,10 +115,10 @@ GET: `/api/v1/grafo/type`
 
 16 - How to create new graph?  
 GET: `/api/v1/grafo/new/:type`  
-**types:** undirected* ; directed; weighted.  
-\*\*: default*
+**types:** undirected\* ; directed; weighted.  
+_\*: default_
 
 ---
 
-15 - How to get Warshall matrix?  
+17 - How to get Warshall matrix?  
 GET: `/api/v1/grafo/warshallMatrix`
