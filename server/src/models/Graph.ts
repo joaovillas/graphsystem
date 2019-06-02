@@ -228,10 +228,10 @@ export class Graph implements GraphInterface {
     const matrix = this.adjacentMatrix();
 
     matrix.forEach((_, k) => {
-      matrix.forEach((__, i) => {
-        matrix.forEach((___, j) => {
-          matrix[i][j] = matrix[i][j] || (matrix[i][k] && matrix[k][j]) ? 1 : 0;
-        });
+      matrix.forEach((row, i) => {
+        if (row[k]) {
+          matrix[i] = row.map((cell, j) => cell || matrix[k][j]);
+        }
       });
     });
 
