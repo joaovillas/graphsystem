@@ -73,8 +73,8 @@ GET: `/api/v1/grafo/node/:id/adjacents`
 ---
 
 8 - How to INSERT a connection between two nodes?  
-GET: `/api/v1/grafo/node/:id/connect/:target[&:weight]*`  
-\*_: if weighted graph_
+GET: `/api/v1/grafo/node/:id/connect/:target[/:weight]*`  
+\*: _if weighted graph; default=1._
 
 ---
 
@@ -116,7 +116,7 @@ GET: `/api/v1/grafo/type`
 16 - How to create new graph?  
 GET: `/api/v1/grafo/new/:type`  
 **types:** undirected\* ; directed; weighted.  
-_\*: default_
+\*: _default._
 
 ---
 

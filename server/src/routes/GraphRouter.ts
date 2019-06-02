@@ -70,7 +70,7 @@ graphRouter.get("/node/:id/connect/:target", (req: Request, res: Response) => {
 });
 
 graphRouter.get(
-  "/node/:id/connect/:target&:weight",
+  "/node/:id/connect/:target/:weight",
   (req: Request, res: Response) => {
     const id = Number(req.params.id);
     const target = Number(req.params.target);
