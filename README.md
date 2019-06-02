@@ -117,3 +117,8 @@ GET: `/api/v1/grafo/type`
 GET: `/api/v1/grafo/new/:type`  
 **types:** undirected* ; directed; weighted.  
 \*\*: default*
+
+---
+
+15 - How to get Warshall matrix?  
+GET: `/api/v1/grafo/warshallMatrix`

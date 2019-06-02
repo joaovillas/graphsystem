@@ -122,3 +122,7 @@ graphRouter.get("/new/:type", (req, res) => {
 graphRouter.get("/type", (_, res) => {
   res.send(graph.type);
 });
+
+graphRouter.get("/warshallMatrix", (_, res) => {
+  res.send(graph.warshallMatrix());
+});

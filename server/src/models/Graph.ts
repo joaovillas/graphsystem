@@ -107,7 +107,7 @@ export class Graph implements GraphInterface {
     return this.getNodes();
   }
 
-  nodeDegree(node: Node) {
+  nodeDegree(node: Node): number {
     return node.connections.length;
   }
 
@@ -191,7 +191,7 @@ export class Graph implements GraphInterface {
     return matriz;
   }
 
-  loadFromFile() {
+  loadFromFile(): NodeInfo[] {
     const graph: GraphFile = JSON.parse(
       fs.readFileSync("input/graph.json", "utf-8")
     );
@@ -205,7 +205,7 @@ export class Graph implements GraphInterface {
     return this.getNodes();
   }
 
-  saveOnFile() {
+  saveOnFile(): string {
     const file: GraphFile = {
       type: this.type,
       nodes: NodeScheme.parseNodeScheme(this.nodes)
@@ -222,5 +222,21 @@ export class Graph implements GraphInterface {
     } catch {
       return "Erro ao salvar";
     }
+  }
+
+  warshallMatrix(): number[][] {
+    const matrix = this.adjacentMatrix();
+
+    matrix.forEach((_, k) => {
+      matrix.forEach((__, i) => {
+        matrix.forEach((___, j) => {
+          matrix[i][j] = matrix[i][j] || (matrix[i][k] && matrix[k][j]) ? 1 : 0;
+        });
+      });
+    });
+
+    console.table(matrix);
+
+    return matrix;
   }
 }
