@@ -1,4 +1,5 @@
 import { Graph } from "../models/Graph";
+import {Node} from "../models/Node"
 
 export type FormattedMatrix = { [r in number]: { [c in number]: number } };
 
@@ -22,4 +23,22 @@ export function formatMatrix(
   });
 
   return formattedMatrix;
+}
+
+export class PriorityQueue{
+  
+  
+  queue: {data: Node, priority:number}[];
+  constructor(){
+    this.queue = [];
+  }
+
+  enqueue(data: Node, priority:number){
+    this.queue.push({data,priority})
+    this.queue.sort((node1, node2) => node1.priority - node2.priority);
+  }
+
+  dequeue(){
+    return this.queue.pop();
+  }
 }
