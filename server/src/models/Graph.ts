@@ -5,7 +5,7 @@ import {
   NodeInfo,
   ConnectionInfo
 } from "../interfaces/GraphInterface";
-import {PriorityQueue} from "../helpers"
+import { PriorityQueue } from "../helpers";
 import { Node } from "./Node";
 import { NodeScheme } from "./NodeScheme";
 
@@ -257,38 +257,45 @@ export class Graph implements GraphInterface {
     return matrix;
   }
 
-  djikstra(nodeId: number){
-    const startNode: Node = this.findNode(nodeId)
+  djikstra(nodeId: number) {
+    const startNode: Node = this.findNode(nodeId);
 
-    const distances = new Map<Node,number>();
-    const prev = new Map<Node,Node>();
-    distances.set(startNode,null)
+    const distances = new Map<Node, number>();
+    const prev = new Map<Node, Node>();
+    distances.set(startNode, null);
     const pq = new PriorityQueue();
     pq.enqueue(startNode, 0);
-    this.rawNodes.forEach(node => {
-      if (node.id !== startNode.id) distances.set(node,Infinity);
-      prev.set(node,null);
-   });
-   const teste: number[] = [];
+    this.nodes.forEach(node => {
+      if (node.id !== startNode.id) distances.set(node, Infinity);
+      prev.set(node, null);
+    });
+
     while (pq.queue.length !== 0) {
       const minNode = pq.dequeue();
-      const currNode:Node = minNode.data;
+      const currNode: Node = minNode.data;
       currNode.connections.forEach(connection => {
         const alt = distances.get(currNode) + connection.weight;
         if (alt < distances.get(connection.neighbor)) {
-           distances.set(connection.neighbor,alt)
-           prev.set(connection.neighbor, currNode);
-           pq.enqueue(connection.neighbor, distances.get(connection.neighbor));
+          distances.set(connection.neighbor, alt);
+          prev.set(connection.neighbor, currNode);
+          pq.enqueue(connection.neighbor, distances.get(connection.neighbor));
         }
-     });
+      });
     }
-    this.registrarElementosDoMapa(nodeId, distances)
+    return this.registrarElementosDoMapa(nodeId, distances);
   }
 
-  registrarElementosDoMapa(startNode:number, distances:Map<Node,number>){
-    distances.forEach((valor:Number,chave:Node) => {
-        if(startNode !== chave.id) console.log(`${startNode} => ${chave.id} = $ ${valor}`)
-    })
-    
+  registrarElementosDoMapa(startNode: number, distances: Map<Node, number>) {
+    const result: { [s: number]: { [n: number]: number } } = {};
+
+    result[startNode] = {};
+
+    distances.forEach((valor: number, chave: Node) => {
+      if (startNode !== chave.id) {
+        result[startNode][chave.id] = valor;
+      }
+    });
+
+    return result;
   }
 }

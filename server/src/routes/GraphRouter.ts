@@ -138,6 +138,7 @@ graphRouter.get("/floydMatrix", (_, res) => {
 
 graphRouter.get("/djikstra/:id", (req: Request, res: Response) => {
   const id = Number(req.params.id);
-  graph.djikstra(id)
-  res.send("djikstra success");
+  const result = graph.djikstra(id);
+  console.table(result);
+  res.send(result);
 });
