@@ -142,3 +142,10 @@ graphRouter.get("/djikstra/:id", (req: Request, res: Response) => {
   console.table(result);
   res.send(result);
 });
+
+graphRouter.get("/bellmanFord/:id", (req: Request, res: Response) => {
+  const id = Number(req.params.id);
+  const result = graph.bellmanFord(id);
+  console.table(result);
+  res.send(result);
+});

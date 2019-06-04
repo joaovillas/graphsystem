@@ -122,3 +122,18 @@ GET: `/api/v1/grafo/new/:type`
 
 17 - How to get Warshall matrix?  
 GET: `/api/v1/grafo/warshallMatrix`
+
+---
+
+18 - How to get Floyd matrix?  
+GET: `/api/v1/grafo/floydMatrix`
+
+---
+
+19 - How to get shortest path from a node to others (Dijkistra)?  
+GET: `/api/v1/grafo/djikstra/:id`
+
+---
+
+20 - How to get shortest path from a node to others (Bellman-Ford)?  
+GET: `/api/v1/grafo/bellmanFord/:id`

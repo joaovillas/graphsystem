@@ -14,6 +14,10 @@ interface GraphFile {
   nodes: NodeScheme[];
 }
 
+interface DistanceMatrix {
+  [start: number]: { [distance: number]: number };
+}
+
 export class Graph implements GraphInterface {
   type: GraphType;
   private rawNodes: Node[];
@@ -286,14 +290,42 @@ export class Graph implements GraphInterface {
   }
 
   registrarElementosDoMapa(startNode: number, distances: Map<Node, number>) {
-    const result: { [s: number]: { [n: number]: number } } = {};
+    const result: DistanceMatrix = {};
 
     result[startNode] = {};
 
     distances.forEach((valor: number, chave: Node) => {
-      if (startNode !== chave.id) {
-        result[startNode][chave.id] = valor;
+      if (startNode !== chave.id) result[startNode][chave.id] = valor;
+    });
+
+    return result;
+  }
+
+  bellmanFord(startNodeId: number) {
+    const nodeList = this.nodes.filter(n => n.id !== startNodeId);
+    const result: DistanceMatrix = {};
+
+    result[startNodeId] = {};
+    nodeList.forEach(node => (result[startNodeId][node.id] = Infinity));
+    const visitedList: number[] = this.findNode(startNodeId).connections.map(
+      ({ neighbor, weight }) => {
+        result[startNodeId][neighbor.id] = weight;
+        return neighbor.id;
       }
+    );
+
+    nodeList.forEach(() => {
+      nodeList.forEach(node => {
+        if (visitedList.includes(node.id)) {
+          node.connections.forEach(({ neighbor: { id }, weight }) => {
+            if (!visitedList.includes(id)) visitedList.push(id);
+            const newDistance = result[startNodeId][node.id] + weight;
+            if (newDistance < result[startNodeId][id]) {
+              result[startNodeId][id] = newDistance;
+            }
+          });
+        }
+      });
     });
 
     return result;
