@@ -131,7 +131,7 @@ GET: `/api/v1/grafo/floydMatrix`
 ---
 
 19 - How to get shortest path from a node to others (Dijkistra)?  
-GET: `/api/v1/grafo/djikstra/:id`
+GET: `/api/v1/grafo/dijkstra/:id`
 
 ---
 

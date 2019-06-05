@@ -330,4 +330,49 @@ export class Graph implements GraphInterface {
 
     return result;
   }
+
+  APS(){
+    if(!this.nodes.length) return("Erro: Grafo vazio.");
+    
+    const nodeList: Element[] = this.nodes.map(n => ({visited: false, node: n}));
+    const components: Element[][] = [];
+    let component: Element[] = [];
+    let element: Element;
+    
+    while(true) {
+        element = nodeList.find(({visited}) => !visited);
+        if (!element) break;
+
+        component.push(element);
+
+        while(true) {
+          element.visited = true;
+          element.node.connections.forEach(c => {
+            const neighbor = nodeList.find(el => el.node.id === c.neighbor.id);
+            if(!neighbor.visited){
+              if(!component.some(n => n.node.id === neighbor.node.id)){
+                component.push(neighbor);
+              }
+            }
+          })
+
+          element = component.find(({visited}) => !visited);
+          if(!element) {
+            components.push(component);
+            component = [];
+            break;
+          }
+        }
+    }
+
+    const result: any = {total_components: components.length, components_size: components.map(c => c.length)};
+    result.biggest_component_has = Math.max(...result.components_size);
+    return(result);
+  }
+
+}
+
+interface Element {
+  visited: boolean;
+  node: Node;
 }

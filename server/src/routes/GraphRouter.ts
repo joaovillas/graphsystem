@@ -136,7 +136,7 @@ graphRouter.get("/floydMatrix", (_, res) => {
   res.send(matrix);
 });
 
-graphRouter.get("/djikstra/:id", (req: Request, res: Response) => {
+graphRouter.get("/dijkstra/:id", (req: Request, res: Response) => {
   const id = Number(req.params.id);
   const result = graph.djikstra(id);
   console.table(result);
@@ -148,4 +148,8 @@ graphRouter.get("/bellmanFord/:id", (req: Request, res: Response) => {
   const result = graph.bellmanFord(id);
   console.table(result);
   res.send(result);
+});
+
+graphRouter.get("/APS", (req: Request, res: Response) => {
+  res.send(graph.APS());
 });

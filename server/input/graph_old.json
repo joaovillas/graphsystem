@@ -1,0 +1,73 @@
+{
+  "type": "undirected",
+  "nodes": [
+    {
+      "id": 2,
+      "connections": [],
+      "weights": []
+    },
+    {
+      "id": 3,
+      "connections": [
+        8,
+        10
+      ],
+      "weights": [
+        1,
+        1
+      ]
+    },
+    {
+      "id": 5,
+      "connections": [
+        11
+      ],
+      "weights": [
+        1
+      ]
+    },
+    {
+      "id": 7,
+      "connections": [
+        8,
+        11
+      ],
+      "weights": [
+        1,
+        1
+      ]
+    },
+    {
+      "id": 8,
+      "connections": [
+        9
+      ],
+      "weights": [
+        1
+      ]
+    },
+    {
+      "id": 9,
+      "connections": [],
+      "weights": []
+    },
+    {
+      "id": 10,
+      "connections": [],
+      "weights": []
+    },
+    {
+      "id": 11,
+      "connections": [
+        9,
+        2,
+        10
+      ],
+      "weights": [
+        1,
+        1,
+        1
+      ]
+    }
+  ]
+}
